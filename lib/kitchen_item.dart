@@ -192,139 +192,142 @@ class _KitchenItemWidgetState extends State<KitchenItemWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          Table(
-            columnWidths: const <int, TableColumnWidth>{
-              0: FlexColumnWidth(),
-              1: IntrinsicColumnWidth(),
-            },
-            defaultVerticalAlignment: TableCellVerticalAlignment.bottom,
-            children: <TableRow>[
-              TableRow(
-                children: <Widget>[
-                  NumberInput(
-                      label: "מחיר למטר אורך:",
-                      hintText: '₪ למטר אורך',
-                      suffix: '₪ למטר אורך',
-                      allowDecimal: true,
-                      controller: pricePerMeterController),
-                  Container(),
-                ],
-              ),
-              TableRow(
-                children: <Widget>[
-                  NumberInput(
-                      label: "מטרים:",
-                      hintText: 'מטרים',
-                      suffix: 'מטרים',
-                      allowDecimal: true,
-                      controller: metersController),
-                  Container(
-                    margin: const EdgeInsets.all(10.0),
-                    child: Text('${item.metersPrice()} ₪'),
-                  ),
-                ],
-              ),
-              TableRow(
-                children: <Widget>[
-                  NumberInput(
-                      label: 'מטרים מעל רוחב 80 ס"מ',
-                      hintText: 'מטרים',
-                      suffix: 'מטרים',
-                      allowDecimal: true,
-                      controller: metersOver80Controller),
-                  Container(
-                    margin: const EdgeInsets.all(10.0),
-                    child: Text('${item.metersOver80ResPrice()} ₪'),
-                  ),
-                ],
-              ),
-              TableRow(
-                children: <Widget>[
-                  NumberInput(
-                      label: "כייורים:",
-                      hintText: 'מספר כייורים',
-                      allowDecimal: true,
-                      controller: sinksController),
-                  Container(
-                    margin: const EdgeInsets.all(10.0),
-                    child: Text('${item.sinkPrice()} ₪'),
-                  ),
-                ],
-              ),
-              TableRow(
-                children: <Widget>[
-                  NumberInput(
-                      label: "קנט:",
-                      hintText: 'מטרים',
-                      suffix: 'מטרים',
-                      allowDecimal: true,
-                      controller: edgeController),
-                  Container(
-                    margin: const EdgeInsets.all(10.0),
-                    child: Text('${item.edgePrice()} ₪'),
-                  ),
-                ],
-              ),
-              TableRow(
-                children: <Widget>[
-                  NumberInput(
-                      label: "חיפוי קיר:",
-                      hintText: 'מטרים',
-                      suffix: 'מטרים',
-                      allowDecimal: true,
-                      controller: wallCoveringController),
-                  Container(
-                    margin: const EdgeInsets.all(10.0),
-                    child: Text('${item.wallCoverPrice()} ₪'),
-                  ),
-                ],
-              ),
-              TableRow(
-                children: <Widget>[
-                  NumberInput(
-                      label: 'חיפוי קיר מעל רוחב 80 ס"מ:',
-                      hintText: 'מטרים',
-                      suffix: 'מטרים',
-                      allowDecimal: true,
-                      controller: wallCoveringOver80Controller),
-                  Container(
-                    margin: const EdgeInsets.all(10.0),
-                    child: Text('${item.wallCoverOver80Price()} ₪'),
-                  ),
-                ],
-              ),
-              TableRow(
-                children: <Widget>[
-                  const Text('Total Price:'),
-                  Container(
+    return Directionality(
+      textDirection: TextDirection.rtl, // set this property
+      child: Scaffold(
+        body: Column(
+          children: [
+            Table(
+              columnWidths: const <int, TableColumnWidth>{
+                0: FlexColumnWidth(),
+                1: IntrinsicColumnWidth(),
+              },
+              defaultVerticalAlignment: TableCellVerticalAlignment.bottom,
+              children: <TableRow>[
+                TableRow(
+                  children: <Widget>[
+                    NumberInput(
+                        label: "מחיר למטר אורך:",
+                        hintText: '₪ למטר אורך',
+                        suffix: '₪ למטר אורך',
+                        allowDecimal: true,
+                        controller: pricePerMeterController),
+                    Container(),
+                  ],
+                ),
+                TableRow(
+                  children: <Widget>[
+                    NumberInput(
+                        label: "מטרים:",
+                        hintText: 'מטרים',
+                        suffix: 'מטרים',
+                        allowDecimal: true,
+                        controller: metersController),
+                    Container(
                       margin: const EdgeInsets.all(10.0),
-                      child: Text('${item.totalPrice()}₪')),
-                ],
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.save),
-                tooltip: 'Save',
-                onPressed: () {
-                  Navigator.pop(context, item);
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.delete),
-                tooltip: 'Discard',
-                onPressed: () {
-                  Navigator.pop(context, null);
-                },
-              )
-            ],
-          )
-        ],
+                      child: Text('${item.metersPrice()} ₪'),
+                    ),
+                  ],
+                ),
+                TableRow(
+                  children: <Widget>[
+                    NumberInput(
+                        label: 'מטרים מעל רוחב 80 ס"מ',
+                        hintText: 'מטרים',
+                        suffix: 'מטרים',
+                        allowDecimal: true,
+                        controller: metersOver80Controller),
+                    Container(
+                      margin: const EdgeInsets.all(10.0),
+                      child: Text('${item.metersOver80ResPrice()} ₪'),
+                    ),
+                  ],
+                ),
+                TableRow(
+                  children: <Widget>[
+                    NumberInput(
+                        label: "כייורים:",
+                        hintText: 'מספר כייורים',
+                        allowDecimal: true,
+                        controller: sinksController),
+                    Container(
+                      margin: const EdgeInsets.all(10.0),
+                      child: Text('${item.sinkPrice()} ₪'),
+                    ),
+                  ],
+                ),
+                TableRow(
+                  children: <Widget>[
+                    NumberInput(
+                        label: "קנט:",
+                        hintText: 'מטרים',
+                        suffix: 'מטרים',
+                        allowDecimal: true,
+                        controller: edgeController),
+                    Container(
+                      margin: const EdgeInsets.all(10.0),
+                      child: Text('${item.edgePrice()} ₪'),
+                    ),
+                  ],
+                ),
+                TableRow(
+                  children: <Widget>[
+                    NumberInput(
+                        label: "חיפוי קיר:",
+                        hintText: 'מטרים',
+                        suffix: 'מטרים',
+                        allowDecimal: true,
+                        controller: wallCoveringController),
+                    Container(
+                      margin: const EdgeInsets.all(10.0),
+                      child: Text('${item.wallCoverPrice()} ₪'),
+                    ),
+                  ],
+                ),
+                TableRow(
+                  children: <Widget>[
+                    NumberInput(
+                        label: 'חיפוי קיר מעל רוחב 80 ס"מ:',
+                        hintText: 'מטרים',
+                        suffix: 'מטרים',
+                        allowDecimal: true,
+                        controller: wallCoveringOver80Controller),
+                    Container(
+                      margin: const EdgeInsets.all(10.0),
+                      child: Text('${item.wallCoverOver80Price()} ₪'),
+                    ),
+                  ],
+                ),
+                TableRow(
+                  children: <Widget>[
+                    const Text('מחיר סה"ך:'),
+                    Container(
+                        margin: const EdgeInsets.all(10.0),
+                        child: Text('${item.totalPrice()}₪')),
+                  ],
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.save),
+                  tooltip: 'Save',
+                  onPressed: () {
+                    Navigator.pop(context, item);
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.delete),
+                  tooltip: 'Discard',
+                  onPressed: () {
+                    Navigator.pop(context, null);
+                  },
+                )
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
