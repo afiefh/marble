@@ -77,7 +77,27 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: items.map((item) => item.displayWidget(context)).toList(),
+          children: items.map((item) {
+            final buttons = <Widget>[
+              IconButton(
+                icon: const Icon(Icons.edit),
+                tooltip: 'Edit',
+                onPressed: () {
+                  //Navigator.pop(context, item);
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete),
+                tooltip: 'Delete',
+                onPressed: () {
+                  setState(() {
+                    items.removeWhere((element) => element.key == item.key);
+                  });
+                },
+              )
+            ];
+            return item.displayWidget(context, buttons);
+          }).toList(),
         ),
       ),
       floatingActionButton: FloatingActionButton(

@@ -21,6 +21,7 @@ String? numberValidator(String? value) {
 }
 
 class KitchenItem {
+  Key key;
   double pricePerMeter;
   double meters;
   double metersOver80;
@@ -29,7 +30,7 @@ class KitchenItem {
   double wallCovering;
   double wallCoveringOver80;
 
-  KitchenItem(
+  KitchenItem(this.key,
       {this.pricePerMeter = 0,
       this.meters = 0,
       this.metersOver80 = 0,
@@ -77,7 +78,7 @@ class KitchenItem {
         wallCoverOver80Res;
   }
 
-  Widget displayWidget(BuildContext context) {
+  Widget displayWidget(BuildContext context, List<Widget> buttons) {
     return Table(
       children: [
         TableRow(children: [Text("מחיר למטר אורך:"), Text("$pricePerMeter")]),
@@ -91,8 +92,14 @@ class KitchenItem {
           Text('חיפוי קיר מעל רוחב 80 ס"מ:'),
           Text("$wallCoveringOver80")
         ]),
-        TableRow(
-            children: [Text('מחיר:'), Text(calculateTotalPrice().toString())]),
+        TableRow(children: [
+          Text('מחיר:'),
+          Text(
+            '${totalPrice()}₪',
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          )
+        ]),
+        TableRow(children: buttons),
       ],
     );
   }
@@ -108,7 +115,7 @@ class _MarbleItemState extends State<MarbleItem> {
   final wallCoveringController = TextEditingController();
   final wallCoveringOver80Controller = TextEditingController();
 
-  KitchenItem item = KitchenItem();
+  KitchenItem item = KitchenItem(UniqueKey());
 
   double metersPrice = 0;
   double metersOver80Price = 0;
@@ -137,7 +144,7 @@ class _MarbleItemState extends State<MarbleItem> {
         parseOrZero(wallCoveringOver80Controller.value.text);
 
     // Create the item
-    item = KitchenItem(
+    item = KitchenItem(item.key,
         pricePerMeter: pricePerMeter,
         meters: meters,
         metersOver80: metersOver80,
@@ -308,7 +315,7 @@ class _MarbleItemState extends State<MarbleItem> {
                   const Text('Total Price:'),
                   Container(
                       margin: const EdgeInsets.all(10.0),
-                      child: Text('$totalPrice₪')),
+                      child: Text('${item.totalPrice()}₪')),
                 ],
               ),
             ],
