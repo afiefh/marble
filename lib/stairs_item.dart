@@ -2,25 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'number_input.dart';
 
-class MarbleItem extends StatefulWidget {
-  const MarbleItem({Key? key}) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() => _MarbleItemState();
-}
-
-String? numberValidator(String? value) {
-  if (value == null) {
-    return null;
-  }
-  final n = num.tryParse(value);
-  if (n == null) {
-    return '"$value" is not a valid number';
-  }
-  return null;
-}
-
-class KitchenItem {
+class StairsItem {
   Key key;
   double pricePerMeter;
   double meters;
@@ -30,7 +12,7 @@ class KitchenItem {
   double wallCovering;
   double wallCoveringOver80;
 
-  KitchenItem(this.key,
+  StairsItem(this.key,
       {this.pricePerMeter = 0,
       this.meters = 0,
       this.metersOver80 = 0,
@@ -81,19 +63,22 @@ class KitchenItem {
   Widget displayWidget(BuildContext context, List<Widget> buttons) {
     return Table(
       children: [
-        TableRow(children: [Text("מחיר למטר אורך:"), Text("$pricePerMeter")]),
-        TableRow(children: [Text("מטרים:"), Text("$meters")]),
         TableRow(
-            children: [Text('מטרים מעל רוחב 80 ס"מ'), Text("$metersOver80")]),
-        TableRow(children: [Text("כייורים"), Text("$sinks")]),
-        TableRow(children: [Text("כייורים"), Text("$edge")]),
-        TableRow(children: [Text("חיפוי קיר:"), Text("$wallCovering")]),
+            children: [const Text("מחיר למטר אורך:"), Text("$pricePerMeter")]),
+        TableRow(children: [const Text("מטרים:"), Text("$meters")]),
         TableRow(children: [
-          Text('חיפוי קיר מעל רוחב 80 ס"מ:'),
+          const Text('מטרים מעל רוחב 80 ס"מ'),
+          Text("$metersOver80")
+        ]),
+        TableRow(children: [const Text("כייורים"), Text("$sinks")]),
+        TableRow(children: [const Text("כייורים"), Text("$edge")]),
+        TableRow(children: [const Text("חיפוי קיר:"), Text("$wallCovering")]),
+        TableRow(children: [
+          const Text('חיפוי קיר מעל רוחב 80 ס"מ:'),
           Text("$wallCoveringOver80")
         ]),
         TableRow(children: [
-          Text('מחיר:'),
+          const Text('מחיר:'),
           Text(
             '${totalPrice()}₪',
             style: const TextStyle(fontWeight: FontWeight.bold),
@@ -105,7 +90,25 @@ class KitchenItem {
   }
 }
 
-class _MarbleItemState extends State<MarbleItem> {
+class StairsItemWidget extends StatefulWidget {
+  const StairsItemWidget({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _StairsItemWidgetState();
+}
+
+String? numberValidator(String? value) {
+  if (value == null) {
+    return null;
+  }
+  final n = num.tryParse(value);
+  if (n == null) {
+    return '"$value" is not a valid number';
+  }
+  return null;
+}
+
+class _StairsItemWidgetState extends State<StairsItemWidget> {
   // Controlers
   final pricePerMeterController = TextEditingController();
   final metersController = TextEditingController();
@@ -115,15 +118,7 @@ class _MarbleItemState extends State<MarbleItem> {
   final wallCoveringController = TextEditingController();
   final wallCoveringOver80Controller = TextEditingController();
 
-  KitchenItem item = KitchenItem(UniqueKey());
-
-  double metersPrice = 0;
-  double metersOver80Price = 0;
-  double edgePrice = 0;
-  double sinksPrice = 0;
-  double wallCoveringPrice = 0;
-  double wallCoveringOver80Price = 0;
-  double totalPrice = 0;
+  StairsItem item = StairsItem(UniqueKey());
 
   double parseOrZero(String input) {
     double? result = double.tryParse(input);
@@ -143,38 +138,15 @@ class _MarbleItemState extends State<MarbleItem> {
     final double wallCoveringOver80 =
         parseOrZero(wallCoveringOver80Controller.value.text);
 
-    // Create the item
-    item = KitchenItem(item.key,
-        pricePerMeter: pricePerMeter,
-        meters: meters,
-        metersOver80: metersOver80,
-        sinks: sinks,
-        edge: edge,
-        wallCovering: wallCovering,
-        wallCoveringOver80: wallCoveringOver80);
-
-    // Calculate outputs
-    final metersRes = pricePerMeter * meters;
-    final metersOver80Res = pricePerMeter * metersOver80 * 2;
-    final sinksRes = sinks;
-    final edgeRes = 100 * edge;
-    final wallCoverRes = wallCovering * pricePerMeter;
-    final wallCoverOver80Res = wallCoveringOver80 * pricePerMeter * 2;
-    final totalRes = metersRes +
-        metersOver80Res +
-        sinksRes +
-        edgeRes +
-        wallCoverRes +
-        wallCoverOver80Res;
-
     setState(() {
-      metersPrice = metersRes;
-      metersOver80Price = metersOver80Res;
-      sinksPrice = sinksRes;
-      edgePrice = edgeRes;
-      wallCoveringPrice = wallCoverRes;
-      wallCoveringOver80Price = wallCoverOver80Res;
-      totalPrice = totalRes;
+      item = StairsItem(item.key,
+          pricePerMeter: pricePerMeter,
+          meters: meters,
+          metersOver80: metersOver80,
+          sinks: sinks,
+          edge: edge,
+          wallCovering: wallCovering,
+          wallCoveringOver80: wallCoveringOver80);
     });
   }
 

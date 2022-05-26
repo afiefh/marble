@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'marble_item.dart';
+import 'kitchen_item.dart';
 
 void main() {
   runApp(const MyApp());
@@ -58,7 +58,8 @@ class _MyHomePageState extends State<MyHomePage> {
     final KitchenItem? result = await Navigator.push(
       context,
       // Create the SelectionScreen in the next step.
-      MaterialPageRoute(builder: (context) => const MarbleItem()),
+      MaterialPageRoute(
+          builder: (context) => KitchenItemWidget(KitchenItem(UniqueKey()))),
     );
 
     if (result != null) {
@@ -82,8 +83,18 @@ class _MyHomePageState extends State<MyHomePage> {
               IconButton(
                 icon: const Icon(Icons.edit),
                 tooltip: 'Edit',
-                onPressed: () {
-                  //Navigator.pop(context, item);
+                onPressed: () async {
+                  final KitchenItem? result = await Navigator.push(
+                    context,
+                    // Create the SelectionScreen in the next step.
+                    MaterialPageRoute(
+                        builder: (context) => KitchenItemWidget(item)),
+                  );
+
+                  if (result == null) return;
+                  setState(() {
+                    items[items.indexOf(item)] = result;
+                  });
                 },
               ),
               IconButton(
