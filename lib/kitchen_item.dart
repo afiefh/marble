@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'item.dart';
 import 'number_input.dart';
 
-class KitchenItem {
-  Key key;
+class KitchenItem extends BaseItem {
   double pricePerMeter;
   double meters;
   double metersOver80;
@@ -12,7 +12,7 @@ class KitchenItem {
   double wallCovering;
   double wallCoveringOver80;
 
-  KitchenItem(this.key,
+  KitchenItem(super.key,
       {this.pricePerMeter = 0,
       this.meters = 0,
       this.metersOver80 = 0,
@@ -60,6 +60,7 @@ class KitchenItem {
         wallCoverOver80Res;
   }
 
+  @override
   Widget displayWidget(BuildContext context, List<Widget> buttons) {
     return Table(
       children: [
