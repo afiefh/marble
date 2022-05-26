@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:marble/stairs_item.dart';
 
+import 'item.dart';
 import 'kitchen_item.dart';
 
 void main() {
@@ -55,9 +57,9 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   // int _counter = 0;
 
-  List<KitchenItem> items = [];
+  List<BaseItem> items = [];
 
-  Future<void> _showItemAddition(BuildContext context) async {
+  Future<void> _showAddKitchenDialog(BuildContext context) async {
     final KitchenItem? result = await Navigator.push(
       context,
       // Create the SelectionScreen in the next step.
@@ -72,6 +74,61 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  Future<void> _showAddStairsDialog(BuildContext context) async {
+    final StairsItem? result = await Navigator.push(
+      context,
+      // Create the SelectionScreen in the next step.
+      MaterialPageRoute(
+          builder: (context) => StairsItemWidget(StairsItem(UniqueKey()))),
+    );
+
+    if (result != null) {
+      setState(() {
+        items.add(result);
+      });
+    }
+  }
+
+  Widget _itemToListWidget(BaseItem item) {
+    final buttons = <Widget>[
+      IconButton(
+        icon: const Icon(Icons.edit),
+        tooltip: 'Edit',
+        onPressed: () async {
+          final BaseItem? result = await Navigator.push(
+            context,
+            // Create the SelectionScreen in the next step.
+            MaterialPageRoute(builder: (context) {
+              if (item is KitchenItem) {
+                return KitchenItemWidget(item);
+              } else if (item is StairsItem) {
+                return StairsItemWidget(item);
+              } else {
+                assert(false); // Don't know what to do with this item!
+                return StairsItemWidget(StairsItem(UniqueKey()));
+              }
+            }),
+          );
+
+          if (result == null) return;
+          setState(() {
+            items[items.indexOf(item)] = result;
+          });
+        },
+      ),
+      IconButton(
+        icon: const Icon(Icons.delete),
+        tooltip: 'Delete',
+        onPressed: () {
+          setState(() {
+            items.removeWhere((element) => element.key == item.key);
+          });
+        },
+      )
+    ];
+    return item.displayWidget(context, buttons);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,45 +138,28 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: items.map((item) {
-            final buttons = <Widget>[
-              IconButton(
-                icon: const Icon(Icons.edit),
-                tooltip: 'Edit',
-                onPressed: () async {
-                  final KitchenItem? result = await Navigator.push(
-                    context,
-                    // Create the SelectionScreen in the next step.
-                    MaterialPageRoute(
-                        builder: (context) => KitchenItemWidget(item)),
-                  );
-
-                  if (result == null) return;
-                  setState(() {
-                    items[items.indexOf(item)] = result;
-                  });
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.delete),
-                tooltip: 'Delete',
-                onPressed: () {
-                  setState(() {
-                    items.removeWhere((element) => element.key == item.key);
-                  });
-                },
-              )
-            ];
-            return item.displayWidget(context, buttons);
-          }).toList(),
+          children: items.map(_itemToListWidget).toList(),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _showItemAddition(context);
-        },
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+      floatingActionButton: Row(
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              _showAddKitchenDialog(context);
+            },
+            tooltip: 'Add Kitchen',
+            heroTag: null,
+            child: const Icon(Icons.room),
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              _showAddStairsDialog(context);
+            },
+            tooltip: 'Add Stairs',
+            heroTag: null,
+            child: const Icon(Icons.stairs),
+          ),
+        ],
       ),
     );
   }
