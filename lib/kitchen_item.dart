@@ -22,8 +22,6 @@ class KitchenItem extends BaseItem {
       this.wallCoveringOver80 = 0});
 
   double metersPrice() {
-    print('pricePerMeter=$pricePerMeter');
-    print('meters=$meters');
     return pricePerMeter * meters;
   }
 
