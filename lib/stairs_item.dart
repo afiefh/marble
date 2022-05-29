@@ -66,9 +66,9 @@ class StairsItem extends BaseItem {
 
   String processingSides() {
     return [
-      (processingFront ? "קדימה" : ""),
-      (processingLeft ? "ימין" : ""),
-      (processingRight ? "שמאל" : "")
+      if (processingFront) "קדימה",
+      if (processingRight) "ימין",
+      if (processingLeft) "שמאל"
     ].join(', ');
   }
 

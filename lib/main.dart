@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:marble/stairs_item.dart';
 
 import 'item.dart';
@@ -118,26 +119,38 @@ class _MyHomePageState extends State<MyHomePage> {
           children: items.map(_itemToListWidget).toList(),
         ),
       ),
-      floatingActionButton: Row(
+      floatingActionButton: SpeedDial(
+        animatedIcon: AnimatedIcons.menu_close,
         children: [
-          FloatingActionButton(
-            onPressed: () {
-              _showAddKitchenDialog(context);
-            },
-            tooltip: 'Add Kitchen',
-            heroTag: null,
-            child: const Icon(Icons.room),
-          ),
-          FloatingActionButton(
-            onPressed: () {
-              _showAddStairsDialog(context);
-            },
-            tooltip: 'Add Stairs',
-            heroTag: null,
+          SpeedDialChild(
             child: const Icon(Icons.stairs),
+            label: 'מדרגות',
+            onTap: () => _showAddStairsDialog(context),
           ),
+          SpeedDialChild(
+            child: const Icon(Icons.room),
+            label: 'מטבח',
+            onTap: () => _showAddKitchenDialog(context),
+          )
         ],
       ),
+      // FloatingActionButton(
+      //   onPressed: () {
+      //     _showAddKitchenDialog(context);
+      //   },
+      //   tooltip: 'Add Kitchen',
+      //   heroTag: null,
+      //   child: const Icon(Icons.room),
+      // ),
+      // FloatingActionButton(
+      //   onPressed: () {
+      //     ;
+      //   },
+      //   tooltip: 'Add Stairs',
+      //   heroTag: null,
+      //   child: const Icon(Icons.stairs),
+      // ),
+      /*],*/
     );
   }
 }
