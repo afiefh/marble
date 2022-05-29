@@ -22,6 +22,8 @@ class KitchenItem extends BaseItem {
       this.wallCoveringOver80 = 0});
 
   double metersPrice() {
+    print('pricePerMeter=$pricePerMeter');
+    print('meters=$meters');
     return pricePerMeter * meters;
   }
 
@@ -46,18 +48,12 @@ class KitchenItem extends BaseItem {
   }
 
   double totalPrice() {
-    final metersRes = metersPrice();
-    final metersOver80Res = metersOver80ResPrice();
-    final sinksRes = sinkPrice();
-    final edgeRes = edgePrice();
-    final wallCoverRes = wallCoverPrice();
-    final wallCoverOver80Res = wallCoverOver80Price();
-    return metersRes +
-        metersOver80Res +
-        sinksRes +
-        edgeRes +
-        wallCoverRes +
-        wallCoverOver80Res;
+    return metersPrice() +
+        metersOver80ResPrice() +
+        sinkPrice() +
+        edgePrice() +
+        wallCoverPrice() +
+        wallCoverOver80Price();
   }
 
   @override
@@ -97,17 +93,6 @@ class KitchenItemWidget extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() => _KitchenItemWidgetState();
-}
-
-String? numberValidator(String? value) {
-  if (value == null) {
-    return null;
-  }
-  final n = num.tryParse(value);
-  if (n == null) {
-    return '"$value" is not a valid number';
-  }
-  return null;
 }
 
 class _KitchenItemWidgetState extends State<KitchenItemWidget> {

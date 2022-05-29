@@ -26,6 +26,17 @@ class NumberInput extends StatelessWidget {
   final String? hintText;
   final String? suffix;
 
+  static String? numberValidator(String? value) {
+    if (value == null) {
+      return null;
+    }
+    final n = num.tryParse(value);
+    if (n == null) {
+      return '"$value" הוא לא מספר חוקי';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -36,12 +47,9 @@ class NumberInput extends StatelessWidget {
       keyboardType: TextInputType.numberWithOptions(decimal: allowDecimal),
       inputFormatters: <TextInputFormatter>[
         FilteringTextInputFormatter.allow(RegExp(_getRegexString())),
-        TextInputFormatter.withFunction(
-          (oldValue, newValue) => newValue.copyWith(
-            text: newValue.text.replaceAll('.', ','),
-          ),
-        ),
       ],
+      validator: numberValidator,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
           label: Text(label),
           errorText: error,
