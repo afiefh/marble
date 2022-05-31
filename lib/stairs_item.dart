@@ -197,6 +197,9 @@ class _StairsItemWidgetState extends State<StairsItemWidget> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
+        appBar: AppBar(
+          title: const Text("מדרגות"),
+        ),
         body: Column(
           children: [
             Table(

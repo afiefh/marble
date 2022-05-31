@@ -179,6 +179,9 @@ class _KitchenItemWidgetState extends State<KitchenItemWidget> {
     return Directionality(
       textDirection: TextDirection.rtl, // set this property
       child: Scaffold(
+        appBar: AppBar(
+          title: const Text("מטבח"),
+        ),
         body: Column(
           children: [
             Table(
