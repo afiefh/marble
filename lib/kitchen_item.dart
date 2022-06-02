@@ -54,6 +54,7 @@ class KitchenItem extends BaseItem {
         wallCoverOver80Price();
   }
 
+
   @override
   Widget displayWidget(BuildContext context, List<Widget> buttons) {
     return Table(
@@ -82,6 +83,11 @@ class KitchenItem extends BaseItem {
         TableRow(children: buttons),
       ],
     );
+  }
+  
+  @override
+  double price() {
+    return totalPrice();
   }
 }
 

@@ -1,6 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:marble/invoice.dart';
 import 'package:marble/stairs_item.dart';
+import 'package:printing/printing.dart';
+import 'package:pdf/pdf.dart';
 
 import 'item.dart';
 import 'kitchen_item.dart';
@@ -107,11 +112,40 @@ class _MyHomePageState extends State<MyHomePage> {
     return item.displayWidget(context, buttons);
   }
 
+Future<Uint8List> generateInvoice(PdfPageFormat pageFormat) async {
+  final invoice = Invoice(
+    invoiceNumber: '982347',
+    products: items,
+    customerName: 'Abraham Swearegin',
+    customerAddress: '54 rue de Rivoli\n75001 Paris, France',
+    paymentInfo:
+        '4509 Wiseman Street\nKnoxville, Tennessee(TN), 37929\n865-372-0425',
+    tax: .15,
+    baseColor: PdfColors.teal,
+    accentColor: PdfColors.blueGrey900,
+  );
+  return invoice.buildPdf(pageFormat);
+}
+
+
+  Future<void> _generatePdf() async {
+    await Printing.layoutPdf(
+        onLayout: (PdfPageFormat pageFormat) async => await generateInvoice(pageFormat));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.print),
+            onPressed: () {
+              _generatePdf();
+            },
+          ),
+        ],
       ),
       body: Center(
         child: Column(
@@ -134,23 +168,6 @@ class _MyHomePageState extends State<MyHomePage> {
           )
         ],
       ),
-      // FloatingActionButton(
-      //   onPressed: () {
-      //     _showAddKitchenDialog(context);
-      //   },
-      //   tooltip: 'Add Kitchen',
-      //   heroTag: null,
-      //   child: const Icon(Icons.room),
-      // ),
-      // FloatingActionButton(
-      //   onPressed: () {
-      //     ;
-      //   },
-      //   tooltip: 'Add Stairs',
-      //   heroTag: null,
-      //   child: const Icon(Icons.stairs),
-      // ),
-      /*],*/
     );
   }
 }

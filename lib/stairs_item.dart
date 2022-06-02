@@ -63,6 +63,10 @@ class StairsItem extends BaseItem {
   double totalPrice() {
     return (_areaPrice() + _processingPrice()) * units;
   }
+  @override
+  double price() {
+    return totalPrice();
+  }
 
   String processingSides() {
     return [
