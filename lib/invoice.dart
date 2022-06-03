@@ -12,21 +12,11 @@ import 'package:printing/printing.dart';
 class Invoice {
   Invoice(
       {required this.products,
-      required this.customerName,
-      required this.customerAddress,
-      required this.invoiceNumber,
-      required this.tax,
-      required this.paymentInfo,
       required this.baseColor,
       required this.accentColor,
       required this.font});
 
   final List<BaseItem> products;
-  final String customerName;
-  final String customerAddress;
-  final String invoiceNumber;
-  final double tax;
-  final String paymentInfo;
   final PdfColor baseColor;
   final PdfColor accentColor;
   final pw.Font font;
@@ -40,8 +30,6 @@ class Invoice {
 
   double get _total =>
       products.map<double>((p) => p.price()).reduce((a, b) => a + b);
-
-  double get _grandTotal => _total * (1 + tax);
 
   String? _logo;
 
@@ -206,7 +194,7 @@ class Invoice {
                   child: pw.Row(
                     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                     children: [
-                      pw.Text(_formatCurrency(_grandTotal)),
+                      pw.Text(_formatCurrency(_total)),
                       pw.Text(reverse('סה"כ:')),
                     ],
                   ),

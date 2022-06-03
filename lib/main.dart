@@ -112,32 +112,32 @@ class _MyHomePageState extends State<MyHomePage> {
     return item.displayWidget(context, buttons);
   }
 
-Future<Uint8List> generateInvoice(PdfPageFormat pageFormat) async {
-  final font = await PdfGoogleFonts.openSansLight();
-  final invoice = Invoice(
-    invoiceNumber: '982347',
-    products: items,
-    customerName: 'Abraham Swearegin',
-    customerAddress: '54 rue de Rivoli\n75001 Paris, France',
-    paymentInfo:
-        '4509 Wiseman Street\nKnoxville, Tennessee(TN), 37929\n865-372-0425',
-    tax: .15,
-    baseColor: PdfColors.teal,
-    accentColor: PdfColors.blueGrey900,
-    font: font
-  );
-  return invoice.buildPdf(pageFormat);
-}
+  double _priceTotal() {
+    return items
+        .map((e) => e.price())
+        .fold(0, (value, element) => value + element);
+  }
 
+  Future<Uint8List> generateInvoice(PdfPageFormat pageFormat) async {
+    final font = await PdfGoogleFonts.openSansLight();
+    final invoice = Invoice(
+        products: items,
+        baseColor: PdfColors.teal,
+        accentColor: PdfColors.blueGrey900,
+        font: font);
+    return invoice.buildPdf(pageFormat);
+  }
 
   Future<void> _generatePdf() async {
     await Printing.layoutPdf(
-        onLayout: (PdfPageFormat pageFormat) async => await generateInvoice(pageFormat));
+        onLayout: (PdfPageFormat pageFormat) async =>
+            await generateInvoice(pageFormat));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       appBar: AppBar(
         title: Text(widget.title),
         actions: [
@@ -148,6 +148,21 @@ Future<Uint8List> generateInvoice(PdfPageFormat pageFormat) async {
             },
           ),
         ],
+      ),
+      bottomNavigationBar: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        color: Theme.of(context).colorScheme.primary,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              Text(
+                'סה"כ:   ${_priceTotal()}₪',
+                style: const TextStyle(color: Colors.white, fontSize: 16),
+              ),
+            ],
+          ),
+        ),
       ),
       body: Center(
         child: Column(
