@@ -66,7 +66,6 @@ class Invoice {
         header: _buildHeader,
         footer: _buildFooter,
         build: (context) => [
-          //_contentHeader(context),
           _contentTable(context),
           pw.SizedBox(height: 20),
           _contentFooter(context),
@@ -103,9 +102,9 @@ class Invoice {
                     ),
                   ),
                   pw.Container(
-                    decoration: pw.BoxDecoration(
+                    decoration: const pw.BoxDecoration(
                       borderRadius:
-                          const pw.BorderRadius.all(pw.Radius.circular(2)),
+                          pw.BorderRadius.all(pw.Radius.circular(2)),
                       //color: accentColor,
                     ),
                     padding: const pw.EdgeInsets.only(
@@ -113,7 +112,7 @@ class Invoice {
                     alignment: pw.Alignment.centerLeft,
                     height: 50,
                     child: pw.DefaultTextStyle(
-                      style: pw.TextStyle(
+                      style: const pw.TextStyle(
                         fontSize: 12,
                       ),
                       child: pw.GridView(
@@ -138,10 +137,6 @@ class Invoice {
                     child:
                         _logo != null ? pw.SvgImage(svg: _logo!) : pw.PdfLogo(),
                   ),
-                  // pw.Container(
-                  //   color: baseColor,
-                  //   padding: pw.EdgeInsets.only(top: 3),
-                  // ),
                 ],
               ),
             ),
@@ -155,9 +150,6 @@ class Invoice {
   pw.Widget _buildFooter(pw.Context context) {
     return pw.Container(
       padding: const pw.EdgeInsets.fromLTRB(20, 20, 20, 20),
-      // decoration: const pw.BoxDecoration(
-      //   color: PdfColor(0,0,0),
-      // ),
       child: pw.Row(
         mainAxisAlignment: pw.MainAxisAlignment.end,
         crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -190,112 +182,10 @@ class Invoice {
     );
   }
 
-  pw.Widget _contentHeader(pw.Context context) {
-    return pw.Row(
-      crossAxisAlignment: pw.CrossAxisAlignment.start,
-      children: [
-        pw.Expanded(
-          child: pw.Container(
-            margin: const pw.EdgeInsets.symmetric(horizontal: 20),
-            height: 70,
-            child: pw.FittedBox(
-              child: pw.Text(
-                'Total: ${_formatCurrency(_grandTotal)}',
-                style: pw.TextStyle(
-                  color: baseColor,
-                  fontStyle: pw.FontStyle.italic,
-                ),
-              ),
-            ),
-          ),
-        ),
-        pw.Expanded(
-          child: pw.Row(
-            children: [
-              pw.Container(
-                margin: const pw.EdgeInsets.only(left: 10, right: 10),
-                height: 70,
-                child: pw.Text(
-                  'Invoice to:',
-                  style: pw.TextStyle(
-                    color: _darkColor,
-                    fontWeight: pw.FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-              pw.Expanded(
-                child: pw.Container(
-                  height: 70,
-                  child: pw.RichText(
-                      text: pw.TextSpan(
-                          text: '$customerName\n',
-                          style: pw.TextStyle(
-                            color: _darkColor,
-                            fontWeight: pw.FontWeight.bold,
-                            fontSize: 12,
-                          ),
-                          children: [
-                        const pw.TextSpan(
-                          text: '\n',
-                          style: pw.TextStyle(
-                            fontSize: 5,
-                          ),
-                        ),
-                        pw.TextSpan(
-                          text: customerAddress,
-                          style: pw.TextStyle(
-                            fontWeight: pw.FontWeight.normal,
-                            fontSize: 10,
-                          ),
-                        ),
-                      ])),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
   pw.Widget _contentFooter(pw.Context context) {
     return pw.Row(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        // pw.Expanded(
-        //   flex: 2,
-        //   child: pw.Column(
-        //     crossAxisAlignment: pw.CrossAxisAlignment.start,
-        //     children: [
-        //       pw.Text(
-        //         'Thank you for your business',
-        //         style: pw.TextStyle(
-        //           color: _darkColor,
-        //           fontWeight: pw.FontWeight.bold,
-        //         ),
-        //       ),
-        //       pw.Container(
-        //         margin: const pw.EdgeInsets.only(top: 20, bottom: 8),
-        //         child: pw.Text(
-        //           'Payment Info:',
-        //           style: pw.TextStyle(
-        //             color: baseColor,
-        //             fontWeight: pw.FontWeight.bold,
-        //           ),
-        //         ),
-        //       ),
-        //       pw.Text(
-        //         paymentInfo,
-        //         style: const pw.TextStyle(
-        //           fontSize: 8,
-        //           lineSpacing: 5,
-        //           color: _darkColor,
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        // ),
         pw.Expanded(
           flex: 1,
           child: pw.DefaultTextStyle(
@@ -331,44 +221,6 @@ class Invoice {
 
   pw.Widget _termsAndConditions(pw.Context context) {
     return pw.Container();
-    return pw.Row(
-      crossAxisAlignment: pw.CrossAxisAlignment.end,
-      children: [
-        pw.Expanded(
-          child: pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              pw.Container(
-                decoration: pw.BoxDecoration(
-                  border: pw.Border(top: pw.BorderSide(color: accentColor)),
-                ),
-                padding: const pw.EdgeInsets.only(top: 10, bottom: 4),
-                child: pw.Text(
-                  'Terms & Conditions',
-                  style: pw.TextStyle(
-                    fontSize: 12,
-                    color: baseColor,
-                    fontWeight: pw.FontWeight.bold,
-                  ),
-                ),
-              ),
-              pw.Text(
-                pw.LoremText().paragraph(40),
-                textAlign: pw.TextAlign.justify,
-                style: const pw.TextStyle(
-                  fontSize: 6,
-                  lineSpacing: 2,
-                  color: _darkColor,
-                ),
-              ),
-            ],
-          ),
-        ),
-        pw.Expanded(
-          child: pw.SizedBox(),
-        ),
-      ],
-    );
   }
 
   pw.Widget _contentTable(pw.Context context) {
