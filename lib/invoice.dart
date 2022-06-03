@@ -52,6 +52,7 @@ class Invoice {
     required this.paymentInfo,
     required this.baseColor,
     required this.accentColor,
+    required this.font
   });
 
   final List<BaseItem> products;
@@ -62,6 +63,7 @@ class Invoice {
   final String paymentInfo;
   final PdfColor baseColor;
   final PdfColor accentColor;
+  final pw.Font font;
 
   static const _darkColor = PdfColors.blueGrey800;
   static const _lightColor = PdfColors.white;
@@ -429,6 +431,8 @@ class Invoice {
       'Name',
       'Price'
     ];
+
+    return pw.Column(children: products.map((e) => e.printWidget(context, font)).toList());
 
     return pw.Table.fromTextArray(
       border: null,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:marble/util.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 import 'item.dart';
 import 'number_input.dart';
@@ -103,6 +104,12 @@ class StairsItem extends BaseItem {
         TableRow(children: buttons),
       ],
     );
+  }
+
+  @override
+  pw.Widget printWidget(pw.Context context, pw.Font font) {
+    // TODO: implement printWidget
+    throw UnimplementedError();
   }
 }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 import 'item.dart';
 import 'number_input.dart';
@@ -54,6 +55,10 @@ class KitchenItem extends BaseItem {
         wallCoverOver80Price();
   }
 
+  @override
+  double price() {
+    return totalPrice();
+  }
 
   @override
   Widget displayWidget(BuildContext context, List<Widget> buttons) {
@@ -84,10 +89,37 @@ class KitchenItem extends BaseItem {
       ],
     );
   }
-  
+
   @override
-  double price() {
-    return totalPrice();
+  pw.Widget printWidget(pw.Context context, pw.Font font) {
+    return pw.Table(
+      children: [
+        pw.TableRow(children: [
+          pw.Text("מחיר למטר אורך:"),
+          pw.Text("$pricePerMeter", style: pw.TextStyle(font: font))
+        ]),
+        pw.TableRow(children: [pw.Text("מטרים:"), pw.Text("$meters")]),
+        pw.TableRow(children: [
+          pw.Text('מטרים מעל רוחב 80 ס"מ'),
+          pw.Text("$metersOver80")
+        ]),
+        pw.TableRow(children: [pw.Text("כייורים"), pw.Text("$sinks")]),
+        pw.TableRow(children: [pw.Text("כייורים"), pw.Text("$edge")]),
+        pw.TableRow(
+            children: [pw.Text("חיפוי קיר:"), pw.Text("$wallCovering")]),
+        pw.TableRow(children: [
+          pw.Text('חיפוי קיר מעל רוחב 80 ס"מ:'),
+          pw.Text("$wallCoveringOver80")
+        ]),
+        pw.TableRow(children: [
+          pw.Text('מחיר:'),
+          pw.Text(
+            '${totalPrice()}₪',
+            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+          )
+        ]),
+      ],
+    );
   }
 }
 
