@@ -1,59 +1,25 @@
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:marble/item.dart';
+import 'package:marble/util.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
-// Future<Uint8List> generateInvoice(PdfPageFormat pageFormat) async {
-//   final lorem = pw.LoremText();
-
-//   final products = <Product>[
-//     Product('19874', lorem.sentence(4), 3.99, 2),
-//     Product('98452', lorem.sentence(6), 15, 2),
-//     Product('28375', lorem.sentence(4), 6.95, 3),
-//     Product('95673', lorem.sentence(3), 49.99, 4),
-//     Product('23763', lorem.sentence(2), 560.03, 1),
-//     Product('55209', lorem.sentence(5), 26, 1),
-//     Product('09853', lorem.sentence(5), 26, 1),
-//     Product('23463', lorem.sentence(5), 34, 1),
-//     Product('56783', lorem.sentence(5), 7, 4),
-//     Product('78256', lorem.sentence(5), 23, 1),
-//     Product('23745', lorem.sentence(5), 94, 1),
-//     Product('07834', lorem.sentence(5), 12, 1),
-//     Product('23547', lorem.sentence(5), 34, 1),
-//     Product('98387', lorem.sentence(5), 7.99, 2),
-//   ];
-
-//   final invoice = Invoice(
-//     invoiceNumber: '982347',
-//     products: products,
-//     customerName: 'Abraham Swearegin',
-//     customerAddress: '54 rue de Rivoli\n75001 Paris, France',
-//     paymentInfo:
-//         '4509 Wiseman Street\nKnoxville, Tennessee(TN), 37929\n865-372-0425',
-//     tax: .15,
-//     baseColor: PdfColors.teal,
-//     accentColor: PdfColors.blueGrey900,
-//   );
-
-//   return await invoice.buildPdf(pageFormat);
-// }
-
 class Invoice {
-  Invoice({
-    required this.products,
-    required this.customerName,
-    required this.customerAddress,
-    required this.invoiceNumber,
-    required this.tax,
-    required this.paymentInfo,
-    required this.baseColor,
-    required this.accentColor,
-    required this.font
-  });
+  Invoice(
+      {required this.products,
+      required this.customerName,
+      required this.customerAddress,
+      required this.invoiceNumber,
+      required this.tax,
+      required this.paymentInfo,
+      required this.baseColor,
+      required this.accentColor,
+      required this.font});
 
   final List<BaseItem> products;
   final String customerName;
@@ -100,7 +66,7 @@ class Invoice {
         header: _buildHeader,
         footer: _buildFooter,
         build: (context) => [
-          _contentHeader(context),
+          //_contentHeader(context),
           _contentTable(context),
           pw.SizedBox(height: 20),
           _contentFooter(context),
@@ -128,7 +94,7 @@ class Invoice {
                     padding: const pw.EdgeInsets.only(left: 20),
                     alignment: pw.Alignment.centerLeft,
                     child: pw.Text(
-                      'INVOICE',
+                      reverse('שיש חלומה'),
                       style: pw.TextStyle(
                         color: baseColor,
                         fontWeight: pw.FontWeight.bold,
@@ -140,7 +106,7 @@ class Invoice {
                     decoration: pw.BoxDecoration(
                       borderRadius:
                           const pw.BorderRadius.all(pw.Radius.circular(2)),
-                      color: accentColor,
+                      //color: accentColor,
                     ),
                     padding: const pw.EdgeInsets.only(
                         left: 40, top: 10, bottom: 10, right: 20),
@@ -148,15 +114,11 @@ class Invoice {
                     height: 50,
                     child: pw.DefaultTextStyle(
                       style: pw.TextStyle(
-                        color: _accentTextColor,
                         fontSize: 12,
                       ),
                       child: pw.GridView(
                         crossAxisCount: 2,
                         children: [
-                          pw.Text('Invoice #'),
-                          pw.Text(invoiceNumber),
-                          pw.Text('Date:'),
                           pw.Text(_formatDate(DateTime.now())),
                         ],
                       ),
@@ -172,7 +134,7 @@ class Invoice {
                   pw.Container(
                     alignment: pw.Alignment.topRight,
                     padding: const pw.EdgeInsets.only(bottom: 8, left: 30),
-                    height: 72,
+                    height: 144,
                     child:
                         _logo != null ? pw.SvgImage(svg: _logo!) : pw.PdfLogo(),
                   ),
@@ -191,27 +153,24 @@ class Invoice {
   }
 
   pw.Widget _buildFooter(pw.Context context) {
-    return pw.Row(
-      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: pw.CrossAxisAlignment.end,
-      children: [
-        pw.Container(
-          height: 20,
-          width: 100,
-          child: pw.BarcodeWidget(
-            barcode: pw.Barcode.pdf417(),
-            data: 'Invoice# $invoiceNumber',
-            drawText: false,
+    return pw.Container(
+      padding: const pw.EdgeInsets.fromLTRB(20, 20, 20, 20),
+      // decoration: const pw.BoxDecoration(
+      //   color: PdfColor(0,0,0),
+      // ),
+      child: pw.Row(
+        mainAxisAlignment: pw.MainAxisAlignment.end,
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Text(
+            'Page ${context.pageNumber}/${context.pagesCount}',
+            style: const pw.TextStyle(
+              fontSize: 12,
+              color: PdfColors.white,
+            ),
           ),
-        ),
-        pw.Text(
-          'Page ${context.pageNumber}/${context.pagesCount}',
-          style: const pw.TextStyle(
-            fontSize: 12,
-            color: PdfColors.white,
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -220,9 +179,9 @@ class Invoice {
     return pw.PageTheme(
       pageFormat: pageFormat,
       theme: pw.ThemeData.withFont(
-        base: base,
-        bold: bold,
-        italic: italic,
+        base: font,
+        bold: font,
+        italic: font,
       ),
       buildBackground: (context) => pw.FullPage(
         ignoreMargins: true,
@@ -304,39 +263,39 @@ class Invoice {
     return pw.Row(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Expanded(
-          flex: 2,
-          child: pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              pw.Text(
-                'Thank you for your business',
-                style: pw.TextStyle(
-                  color: _darkColor,
-                  fontWeight: pw.FontWeight.bold,
-                ),
-              ),
-              pw.Container(
-                margin: const pw.EdgeInsets.only(top: 20, bottom: 8),
-                child: pw.Text(
-                  'Payment Info:',
-                  style: pw.TextStyle(
-                    color: baseColor,
-                    fontWeight: pw.FontWeight.bold,
-                  ),
-                ),
-              ),
-              pw.Text(
-                paymentInfo,
-                style: const pw.TextStyle(
-                  fontSize: 8,
-                  lineSpacing: 5,
-                  color: _darkColor,
-                ),
-              ),
-            ],
-          ),
-        ),
+        // pw.Expanded(
+        //   flex: 2,
+        //   child: pw.Column(
+        //     crossAxisAlignment: pw.CrossAxisAlignment.start,
+        //     children: [
+        //       pw.Text(
+        //         'Thank you for your business',
+        //         style: pw.TextStyle(
+        //           color: _darkColor,
+        //           fontWeight: pw.FontWeight.bold,
+        //         ),
+        //       ),
+        //       pw.Container(
+        //         margin: const pw.EdgeInsets.only(top: 20, bottom: 8),
+        //         child: pw.Text(
+        //           'Payment Info:',
+        //           style: pw.TextStyle(
+        //             color: baseColor,
+        //             fontWeight: pw.FontWeight.bold,
+        //           ),
+        //         ),
+        //       ),
+        //       pw.Text(
+        //         paymentInfo,
+        //         style: const pw.TextStyle(
+        //           fontSize: 8,
+        //           lineSpacing: 5,
+        //           color: _darkColor,
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
         pw.Expanded(
           flex: 1,
           child: pw.DefaultTextStyle(
@@ -347,21 +306,6 @@ class Invoice {
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
-                pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                  children: [
-                    pw.Text('Sub Total:'),
-                    pw.Text(_formatCurrency(_total)),
-                  ],
-                ),
-                pw.SizedBox(height: 5),
-                pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                  children: [
-                    pw.Text('Tax:'),
-                    pw.Text('${(tax * 100).toStringAsFixed(1)}%'),
-                  ],
-                ),
                 pw.Divider(color: accentColor),
                 pw.DefaultTextStyle(
                   style: pw.TextStyle(
@@ -372,8 +316,8 @@ class Invoice {
                   child: pw.Row(
                     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                     children: [
-                      pw.Text('Total:'),
                       pw.Text(_formatCurrency(_grandTotal)),
+                      pw.Text(reverse('סה"כ:')),
                     ],
                   ),
                 ),
@@ -386,6 +330,7 @@ class Invoice {
   }
 
   pw.Widget _termsAndConditions(pw.Context context) {
+    return pw.Container();
     return pw.Row(
       crossAxisAlignment: pw.CrossAxisAlignment.end,
       children: [
@@ -427,94 +372,21 @@ class Invoice {
   }
 
   pw.Widget _contentTable(pw.Context context) {
-    const tableHeaders = [
-      'Name',
-      'Price'
-    ];
-
-    return pw.Column(children: products.map((e) => e.printWidget(context, font)).toList());
-
-    return pw.Table.fromTextArray(
-      border: null,
-      cellAlignment: pw.Alignment.centerLeft,
-      headerDecoration: pw.BoxDecoration(
-        borderRadius: const pw.BorderRadius.all(pw.Radius.circular(2)),
-        color: baseColor,
-      ),
-      headerHeight: 25,
-      cellHeight: 40,
-      cellAlignments: {
-        0: pw.Alignment.centerLeft,
-        1: pw.Alignment.centerRight,
-      },
-      headerStyle: pw.TextStyle(
-        color: _baseTextColor,
-        fontSize: 10,
-        fontWeight: pw.FontWeight.bold,
-      ),
-      cellStyle: const pw.TextStyle(
-        color: _darkColor,
-        fontSize: 10,
-      ),
-      rowDecoration: pw.BoxDecoration(
-        border: pw.Border(
-          bottom: pw.BorderSide(
-            color: accentColor,
-            width: .5,
-          ),
-        ),
-      ),
-      headers: List<String>.generate(
-        tableHeaders.length,
-        (col) => tableHeaders[col],
-      ),
-      data: List<List<String>>.generate(
-        products.length,
-        (row) => List<String>.generate(
-          tableHeaders.length,
-          (col) => col == 0 ? "ItemName" : "${products[row].price()}",
-        ),
+    return pw.Directionality(
+      textDirection: pw.TextDirection.rtl,
+      child: pw.Column(
+        children: products.map((e) => e.printWidget(context, font)).toList(),
       ),
     );
   }
 }
 
-String _formatCurrency(double amount) {
-  return '\$${amount.toStringAsFixed(2)}';
-}
-
 String _formatDate(DateTime date) {
-  final format = DateFormat.yMMMd('en_US');
+  initializeDateFormatting('iw_IL');
+  final format = DateFormat.yMd('iw_IL');
   return format.format(date);
 }
 
-class Product {
-  const Product(
-    this.sku,
-    this.productName,
-    this.price,
-    this.quantity,
-  );
-
-  final String sku;
-  final String productName;
-  final double price;
-  final int quantity;
-  double get total => price * quantity;
-
-  String getIndex(int index) {
-    switch (index) {
-      case 0:
-        return sku;
-      case 1:
-        return productName;
-      case 2:
-        return _formatCurrency(price);
-      case 3:
-        return quantity.toString();
-      case 4:
-        return _formatCurrency(total);
-    }
-    return '';
-  }
+String _formatCurrency(double amount) {
+  return '₪${amount.toStringAsFixed(2)}';
 }

@@ -113,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 Future<Uint8List> generateInvoice(PdfPageFormat pageFormat) async {
-  final font = await PdfGoogleFonts.nunitoExtraLight();
+  final font = await PdfGoogleFonts.openSansLight();
   final invoice = Invoice(
     invoiceNumber: '982347',
     products: items,

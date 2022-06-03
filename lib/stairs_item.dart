@@ -29,7 +29,7 @@ class StairsItem extends BaseItem {
     this.processingCost = 0,
   });
 
-  riserCost() {
+  double riserCost() {
     return withRiser ? 0.15 * length * pricePerMeter : 0;
   }
 
@@ -64,6 +64,7 @@ class StairsItem extends BaseItem {
   double totalPrice() {
     return (_areaPrice() + _processingPrice()) * units;
   }
+
   @override
   double price() {
     return totalPrice();
@@ -77,6 +78,10 @@ class StairsItem extends BaseItem {
     ].join(', ');
   }
 
+  String withRiserStr() {
+    return withRiser ? "כן" : "לא";
+  }
+
   @override
   Widget displayWidget(BuildContext context, List<Widget> buttons) {
     return Table(
@@ -86,8 +91,7 @@ class StairsItem extends BaseItem {
         TableRow(children: [const Text("יחידות:"), Text("$units")]),
         TableRow(children: [const Text('אורך:'), Text("$length")]),
         TableRow(children: [const Text("רוחב:"), Text("$width")]),
-        TableRow(
-            children: [const Text("עם רייזר:"), Text(withRiser ? "כן" : "לא")]),
+        TableRow(children: [const Text("עם רייזר:"), Text(withRiserStr())]),
         TableRow(children: [
           const Text("עיבוד:"),
           Row(children: [Text(processingSides())])
@@ -108,8 +112,48 @@ class StairsItem extends BaseItem {
 
   @override
   pw.Widget printWidget(pw.Context context, pw.Font font) {
-    // TODO: implement printWidget
-    throw UnimplementedError();
+    return pw.Table(
+      columnWidths: {0: const pw.FlexColumnWidth(1), 1: const pw.FlexColumnWidth(1)},
+      children: [
+        pw.TableRow(children: [
+          pw.Container(),
+          pw.Text(reverse("מדרגות"),
+              style:
+                  pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 20)),
+        ]),
+        pw.TableRow(children: [
+          pw.Text("$pricePerMeter"),
+          pw.Text(reverse("מחיר למטר אורך:")),
+        ]),
+        pw.TableRow(children: [
+          pw.Text("$units"),
+          pw.Text(reverse("יחידות:")),
+        ]),
+        pw.TableRow(children: [
+          pw.Text("$length"),
+          pw.Text(reverse('אורך')),
+        ]),
+        pw.TableRow(children: [
+          pw.Text("$width"),
+          pw.Text(reverse("רוחב")),
+        ]),
+        pw.TableRow(children: [
+          pw.Text(reverse(withRiserStr())),
+          pw.Text(reverse("עם רייזר")),
+        ]),
+        pw.TableRow(children: [
+          pw.Text(reverse(processingSides())),
+          pw.Text(reverse("עיבוד:")),
+        ]),
+        pw.TableRow(children: [
+          pw.Text(
+            '${totalPrice()}₪',
+            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+          ),
+          pw.Text(reverse('מחיר:')),
+        ]),
+      ],
+    );
   }
 }
 
