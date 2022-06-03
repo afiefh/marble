@@ -151,7 +151,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
-        color: Theme.of(context).colorScheme.primary,
+        color: Colors.blue,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Row(
