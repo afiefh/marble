@@ -29,7 +29,7 @@ class Invoice {
   PdfColor get _accentTextColor => baseColor.isLight ? _lightColor : _darkColor;
 
   double get _total =>
-      products.map<double>((p) => p.price()).reduce((a, b) => a + b);
+      products.map<double>((p) => p.price()).fold(0, (a, b) => a + b);
 
   String? _logo;
 
