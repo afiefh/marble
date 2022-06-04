@@ -89,6 +89,7 @@ class StairsItem extends BaseItem {
   @override
   Widget displayWidget(BuildContext context, List<Widget> buttons) {
     return Table(
+      key: key,
       children: [
         TableRow(
             children: [const Text("מחיר למטר אורך:"), Text("$pricePerMeter")]),

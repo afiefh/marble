@@ -42,7 +42,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<BaseItem> items = [];
+  final List<BaseItem> _items = [];
 
   Future<void> _showAddKitchenDialog(BuildContext context) async {
     final KitchenItem? result = await Navigator.push(
@@ -53,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (result != null) {
       setState(() {
-        items.add(result);
+        _items.add(result);
       });
     }
   }
@@ -68,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (result != null) {
       setState(() {
-        items.add(result);
+        _items.add(result);
       });
     }
   }
@@ -95,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
           if (result == null) return;
           setState(() {
-            items[items.indexOf(item)] = result;
+            _items[_items.indexOf(item)] = result;
           });
         },
       ),
@@ -104,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Delete',
         onPressed: () {
           setState(() {
-            items.removeWhere((element) => element.key == item.key);
+            _items.removeWhere((element) => element.key == item.key);
           });
         },
       )
@@ -113,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   double _priceTotal() {
-    return items
+    return _items
         .map((e) => e.price())
         .fold(0, (value, element) => value + element);
   }
@@ -121,7 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<Uint8List> generateInvoice(PdfPageFormat pageFormat) async {
     final font = await PdfGoogleFonts.openSansLight();
     final invoice = Invoice(
-        products: items,
+        products: _items,
         baseColor: PdfColors.teal,
         accentColor: PdfColors.blueGrey900,
         font: font);
@@ -164,9 +164,16 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: items.map(_itemToListWidget).toList(),
+        child: ReorderableListView(
+          //mainAxisAlignment: MainAxisAlignment.center,
+          children: _items.map(_itemToListWidget).toList(),
+          onReorder: (int oldIndex, int newIndex) {        setState(() {
+          if (oldIndex < newIndex) {
+            newIndex -= 1;
+          }
+          final item = _items.removeAt(oldIndex);
+          _items.insert(newIndex, item);
+        });},
         ),
       ),
       floatingActionButton: SpeedDial(

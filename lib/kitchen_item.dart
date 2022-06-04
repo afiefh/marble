@@ -64,6 +64,7 @@ class KitchenItem extends BaseItem {
   @override
   Widget displayWidget(BuildContext context, List<Widget> buttons) {
     return Table(
+      key: key,
       children: [
         TableRow(
             children: [const Text("מחיר למטר אורך:"), Text("$pricePerMeter")]),
@@ -94,12 +95,16 @@ class KitchenItem extends BaseItem {
   @override
   pw.Widget printWidget(pw.Context context, pw.Font font) {
     return pw.Table(
-      columnWidths: {0: const pw.FlexColumnWidth(1), 1: const pw.FlexColumnWidth(1)},
+      columnWidths: {
+        0: const pw.FlexColumnWidth(1),
+        1: const pw.FlexColumnWidth(1)
+      },
       children: [
         pw.TableRow(children: [
           pw.Container(),
           pw.Text(reverse("מטבח"),
-              style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 20)),
+              style:
+                  pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 20)),
         ]),
         pw.TableRow(children: [
           pw.Text("$pricePerMeter"),
