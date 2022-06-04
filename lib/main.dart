@@ -137,7 +137,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       appBar: AppBar(
         title: Text(widget.title),
         actions: [
