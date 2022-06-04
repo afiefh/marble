@@ -21,13 +21,6 @@ class Invoice {
   final PdfColor accentColor;
   final pw.Font font;
 
-  static const _darkColor = PdfColors.blueGrey800;
-  static const _lightColor = PdfColors.white;
-
-  PdfColor get _baseTextColor => baseColor.isLight ? _lightColor : _darkColor;
-
-  PdfColor get _accentTextColor => baseColor.isLight ? _lightColor : _darkColor;
-
   double get _total =>
       products.map<double>((p) => p.price()).fold(0, (a, b) => a + b);
 
@@ -179,7 +172,7 @@ class Invoice {
           child: pw.DefaultTextStyle(
             style: const pw.TextStyle(
               fontSize: 10,
-              color: _darkColor,
+              color: PdfColors.blueGrey800,
             ),
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
