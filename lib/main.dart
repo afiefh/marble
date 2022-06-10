@@ -167,13 +167,15 @@ class _MyHomePageState extends State<MyHomePage> {
         child: ReorderableListView(
           //mainAxisAlignment: MainAxisAlignment.center,
           children: _items.map(_itemToListWidget).toList(),
-          onReorder: (int oldIndex, int newIndex) {        setState(() {
-          if (oldIndex < newIndex) {
-            newIndex -= 1;
-          }
-          final item = _items.removeAt(oldIndex);
-          _items.insert(newIndex, item);
-        });},
+          onReorder: (int oldIndex, int newIndex) {
+            setState(() {
+              if (oldIndex < newIndex) {
+                newIndex -= 1;
+              }
+              final item = _items.removeAt(oldIndex);
+              _items.insert(newIndex, item);
+            });
+          },
         ),
       ),
       floatingActionButton: SpeedDial(
