@@ -24,7 +24,7 @@ class Invoice {
   double get _total =>
       products.map<double>((p) => p.price()).fold(0, (a, b) => a + b);
 
-  String? _logo;
+  Uint8List _logo = Uint8List(0);
 
   String? _bgShape;
 
@@ -32,7 +32,8 @@ class Invoice {
     // Create a PDF document.
     final doc = pw.Document();
 
-    _logo = await rootBundle.loadString('assets/logo.svg');
+    final ByteData bytes = await rootBundle.load('assets/logo.jpg');
+    _logo = bytes.buffer.asUint8List();
     _bgShape = await rootBundle.loadString('assets/invoice.svg');
 
     // Add page to the PDF
@@ -114,8 +115,9 @@ class Invoice {
                     alignment: pw.Alignment.topRight,
                     padding: const pw.EdgeInsets.only(bottom: 8, left: 30),
                     height: 144,
-                    child:
-                        _logo != null ? pw.SvgImage(svg: _logo!) : pw.PdfLogo(),
+                    child: pw.Image(
+                      pw.MemoryImage(_logo),
+                    ),
                   ),
                 ],
               ),
