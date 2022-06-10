@@ -18,6 +18,8 @@ class StairsItem extends BaseItem {
   bool processingLeft;
   bool processingRight;
   double processingCost;
+  double tilingMeters;
+  double tilingCost;
 
   StairsItem(
     super.key, {
@@ -31,6 +33,8 @@ class StairsItem extends BaseItem {
     this.processingLeft = false,
     this.processingRight = false,
     this.processingCost = 0,
+    this.tilingMeters = 0,
+    this.tilingCost = 0,
   });
 
   double riserCost() {
@@ -65,8 +69,12 @@ class StairsItem extends BaseItem {
     return processingFrontCost() + processingLeftCost() + processingRightCost();
   }
 
+  double tilingPrice() {
+    return tilingMeters * tilingCost;
+  }
+
   double totalPrice() {
-    return (_areaPrice() + _processingPrice()) * units;
+    return (_areaPrice() + _processingPrice() + tilingPrice()) * units;
   }
 
   @override
@@ -108,6 +116,9 @@ class StairsItem extends BaseItem {
         ]),
         TableRow(
             children: [const Text('מחיר עיבוד:'), Text("$processingCost")]),
+        TableRow(children: [const Text('שטח ריצוף:'), Text("$tilingMeters")]),
+        TableRow(
+            children: [const Text('מחיר ריצוף למטר:'), Text("$tilingMeters")]),
         TableRow(children: [
           const Text('מחיר:'),
           Text(
@@ -146,17 +157,21 @@ class StairsItem extends BaseItem {
           pw.Text("$length"),
           pw.Text(reverse('אורך')),
         ]),
-        if (widthLeft == widthRight) pw.TableRow(children: [
-          pw.Text("$widthRight"),
-          pw.Text(reverse("רוחב")),
-        ])
-        else ...[pw.TableRow(children: [
-          pw.Text("$widthRight"),
-          pw.Text(reverse("רוחב ימין")),
-        ]),pw.TableRow(children: [
-          pw.Text("$widthLeft"),
-          pw.Text(reverse("רוחב שמאל")),
-        ])],
+        if (widthLeft == widthRight)
+          pw.TableRow(children: [
+            pw.Text("$widthRight"),
+            pw.Text(reverse("רוחב")),
+          ])
+        else ...[
+          pw.TableRow(children: [
+            pw.Text("$widthRight"),
+            pw.Text(reverse("רוחב ימין")),
+          ]),
+          pw.TableRow(children: [
+            pw.Text("$widthLeft"),
+            pw.Text(reverse("רוחב שמאל")),
+          ])
+        ],
         pw.TableRow(children: [
           pw.Text(reverse(withRiserStr())),
           pw.Text(reverse("עם רייזר")),
@@ -164,6 +179,14 @@ class StairsItem extends BaseItem {
         pw.TableRow(children: [
           pw.Text(reverse(processingSides())),
           pw.Text(reverse("עיבוד:")),
+        ]),
+        pw.TableRow(children: [
+          pw.Text("$tilingMeters"),
+          pw.Text(reverse("שטח ריצוף:")),
+        ]),
+        pw.TableRow(children: [
+          pw.Text("$tilingCost"),
+          pw.Text(reverse("מחיר ריצוף למטר:")),
         ]),
         pw.TableRow(children: [
           pw.Text(
@@ -209,6 +232,8 @@ class _StairsItemWidgetState extends State<StairsItemWidget> {
   final widthRightController = TextEditingController();
   final widthLeftController = TextEditingController();
   final processingCostController = TextEditingController();
+  final tilingMetersController = TextEditingController();
+  final tilingCostController = TextEditingController();
 
   late StairsItem item;
 
@@ -225,9 +250,13 @@ class _StairsItemWidgetState extends State<StairsItemWidget> {
     final double units = parseOrZero(unitsController.value.text);
     final double length = parseOrZero(lengthController.value.text);
     final double widthRight = parseOrZero(widthRightController.value.text);
-    final double widthLeft = _stairShape == StairShape.square ? widthRight : parseOrZero(widthLeftController.value.text);
+    final double widthLeft = _stairShape == StairShape.square
+        ? widthRight
+        : parseOrZero(widthLeftController.value.text);
     final double processingCost =
         parseOrZero(processingCostController.value.text);
+    final double tilingMeters = parseOrZero(tilingMetersController.value.text);
+    final double tilingCost = parseOrZero(tilingCostController.value.text);
 
     setState(() {
       item.pricePerMeter = pricePerMeter;
@@ -236,6 +265,8 @@ class _StairsItemWidgetState extends State<StairsItemWidget> {
       item.widthRight = widthRight;
       item.widthLeft = widthLeft;
       item.processingCost = processingCost;
+      item.tilingMeters = tilingMeters;
+      item.tilingCost = tilingCost;
     });
   }
 
@@ -247,6 +278,8 @@ class _StairsItemWidgetState extends State<StairsItemWidget> {
     widthRightController.dispose();
     widthLeftController.dispose();
     processingCostController.dispose();
+    tilingMetersController.dispose();
+    tilingCostController.dispose();
     super.dispose();
   }
 
@@ -265,7 +298,11 @@ class _StairsItemWidgetState extends State<StairsItemWidget> {
     widthRightController.text = zeroToEmpty(item.widthRight);
     widthLeftController.text = zeroToEmpty(item.widthLeft);
     processingCostController.text = zeroToEmpty(item.processingCost);
-    _stairShape = item.widthLeft == item.widthRight ? StairShape.square : StairShape.trapezoid;
+    tilingMetersController.text = zeroToEmpty(item.tilingMeters);
+    tilingCostController.text = zeroToEmpty(item.tilingCost);
+    _stairShape = item.widthLeft == item.widthRight
+        ? StairShape.square
+        : StairShape.trapezoid;
 
     // Start listening to changes.
     pricePerMeterController.addListener(_calculatePriceChanges);
@@ -274,12 +311,15 @@ class _StairsItemWidgetState extends State<StairsItemWidget> {
     widthLeftController.addListener(_calculatePriceChanges);
     widthRightController.addListener(_calculatePriceChanges);
     processingCostController.addListener(_calculatePriceChanges);
+    tilingMetersController.addListener(_calculatePriceChanges);
+    tilingCostController.addListener(_calculatePriceChanges);
   }
 
   final List<bool> _toggleButtonSelection = [true, false];
   StairShape get _stairShape {
     return StairShape.values[_toggleButtonSelection.indexOf(true)];
   }
+
   set _stairShape(StairShape shape) {
     _toggleButtonSelection.setAll(0, [false, false]);
     _toggleButtonSelection[shape.index] = true;
@@ -476,6 +516,31 @@ class _StairsItemWidgetState extends State<StairsItemWidget> {
                     Container(
                       margin: const EdgeInsets.all(10.0),
                       child: Text('${item.processingCost} ₪ למטר עיבוד'),
+                    ),
+                  ],
+                ),
+                TableRow(
+                  children: <Widget>[
+                    NumberInput(
+                        label: "שטח ריצוף:",
+                        hintText: 'מטר מרובע',
+                        suffix: 'מטר מרובע',
+                        allowDecimal: true,
+                        controller: tilingMetersController),
+                    Container(),
+                  ],
+                ),
+                TableRow(
+                  children: <Widget>[
+                    NumberInput(
+                        label: "מחיר ריצוף:",
+                        hintText: '₪ למטר מרובע',
+                        suffix: '₪ למטר מרובע',
+                        allowDecimal: true,
+                        controller: tilingCostController),
+                    Container(
+                      margin: const EdgeInsets.all(10.0),
+                      child: Text('${item.tilingPrice()} ₪'),
                     ),
                   ],
                 ),
