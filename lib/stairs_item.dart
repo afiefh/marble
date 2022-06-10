@@ -20,6 +20,7 @@ class StairsItem extends BaseItem {
   double processingCost;
   double tilingMeters;
   double tilingCost;
+  double panels;
 
   StairsItem(
     super.key, {
@@ -35,6 +36,7 @@ class StairsItem extends BaseItem {
     this.processingCost = 0,
     this.tilingMeters = 0,
     this.tilingCost = 0,
+    this.panels = 0,
   });
 
   double riserCost() {
@@ -74,7 +76,7 @@ class StairsItem extends BaseItem {
   }
 
   double totalPrice() {
-    return (_areaPrice() + _processingPrice() + tilingPrice()) * units;
+    return (_areaPrice() + _processingPrice() + panels) * units + tilingPrice();
   }
 
   @override
@@ -119,6 +121,7 @@ class StairsItem extends BaseItem {
         TableRow(children: [const Text('שטח ריצוף:'), Text("$tilingMeters")]),
         TableRow(
             children: [const Text('מחיר ריצוף למטר:'), Text("$tilingMeters")]),
+        TableRow(children: [const Text('פאנל:'), Text("$panels")]),
         TableRow(children: [
           const Text('מחיר:'),
           Text(
@@ -189,6 +192,10 @@ class StairsItem extends BaseItem {
           pw.Text(reverse("מחיר ריצוף למטר:")),
         ]),
         pw.TableRow(children: [
+          pw.Text("$panels"),
+          pw.Text(reverse("פאנל:")),
+        ]),
+        pw.TableRow(children: [
           pw.Text(
             '${totalPrice()}₪',
             style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
@@ -234,6 +241,7 @@ class _StairsItemWidgetState extends State<StairsItemWidget> {
   final processingCostController = TextEditingController();
   final tilingMetersController = TextEditingController();
   final tilingCostController = TextEditingController();
+  final panelsController = TextEditingController();
 
   late StairsItem item;
 
@@ -257,6 +265,7 @@ class _StairsItemWidgetState extends State<StairsItemWidget> {
         parseOrZero(processingCostController.value.text);
     final double tilingMeters = parseOrZero(tilingMetersController.value.text);
     final double tilingCost = parseOrZero(tilingCostController.value.text);
+    final double panels = parseOrZero(panelsController.value.text);
 
     setState(() {
       item.pricePerMeter = pricePerMeter;
@@ -267,6 +276,7 @@ class _StairsItemWidgetState extends State<StairsItemWidget> {
       item.processingCost = processingCost;
       item.tilingMeters = tilingMeters;
       item.tilingCost = tilingCost;
+      item.panels = panels;
     });
   }
 
@@ -280,6 +290,7 @@ class _StairsItemWidgetState extends State<StairsItemWidget> {
     processingCostController.dispose();
     tilingMetersController.dispose();
     tilingCostController.dispose();
+    panelsController.dispose();
     super.dispose();
   }
 
@@ -300,6 +311,7 @@ class _StairsItemWidgetState extends State<StairsItemWidget> {
     processingCostController.text = zeroToEmpty(item.processingCost);
     tilingMetersController.text = zeroToEmpty(item.tilingMeters);
     tilingCostController.text = zeroToEmpty(item.tilingCost);
+    panelsController.text = zeroToEmpty(item.panels);
     _stairShape = item.widthLeft == item.widthRight
         ? StairShape.square
         : StairShape.trapezoid;
@@ -542,6 +554,17 @@ class _StairsItemWidgetState extends State<StairsItemWidget> {
                       margin: const EdgeInsets.all(10.0),
                       child: Text('${item.tilingPrice()} ₪'),
                     ),
+                  ],
+                ),
+                TableRow(
+                  children: <Widget>[
+                    NumberInput(
+                        label: "פאנל:",
+                        hintText: '₪',
+                        suffix: '₪',
+                        allowDecimal: true,
+                        controller: panelsController),
+                    Container(),
                   ],
                 ),
                 TableRow(
