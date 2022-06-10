@@ -84,8 +84,7 @@ class Invoice {
                   ),
                   pw.Container(
                     decoration: const pw.BoxDecoration(
-                      borderRadius:
-                          pw.BorderRadius.all(pw.Radius.circular(2)),
+                      borderRadius: pw.BorderRadius.all(pw.Radius.circular(2)),
                       //color: accentColor,
                     ),
                     padding: const pw.EdgeInsets.only(
@@ -177,6 +176,21 @@ class Invoice {
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Text(_formatCurrency(_total)),
+                    pw.Text(reverse('ללא מע"ם:')),
+                  ],
+                ),
+                pw.SizedBox(height: 5),
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Text('${(0.17 * 100).toStringAsFixed(1)}%'),
+                    pw.Text(reverse('מע"ם:')),
+                  ],
+                ),
                 pw.Divider(color: accentColor),
                 pw.DefaultTextStyle(
                   style: pw.TextStyle(
@@ -187,7 +201,7 @@ class Invoice {
                   child: pw.Row(
                     mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                     children: [
-                      pw.Text(_formatCurrency(_total)),
+                      pw.Text(_formatCurrency(_total * 1.17)),
                       pw.Text(reverse('סה"כ:')),
                     ],
                   ),
