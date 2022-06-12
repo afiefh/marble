@@ -76,7 +76,7 @@ class StairsItem extends BaseItem {
   }
 
   double totalPrice() {
-    return (_areaPrice() + _processingPrice() + panels) * units + tilingPrice();
+    return (_areaPrice() + _processingPrice()) * units + tilingPrice() + panels;
   }
 
   @override
