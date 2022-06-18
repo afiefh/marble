@@ -88,9 +88,9 @@ class _AdditionalItemsWidgetState extends State<AdditionalItemsWidget> {
                 });
               },
             ),
-            TableCell(
-                child: Text("פרטים נוספים: "),
-                verticalAlignment: TableCellVerticalAlignment.middle),
+            const TableCell(
+                verticalAlignment: TableCellVerticalAlignment.middle,
+                child: Text("פרטים נוספים: ")),
             Container(),
           ]),
           ...super

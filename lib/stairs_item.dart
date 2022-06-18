@@ -104,8 +104,7 @@ class StairsItem extends BaseItem {
     if (sides.isEmpty) {
       return "ללא עיבוד";
     }
-    return sides.join(', ')
-
+    return sides.join(', ');
   }
 
   String withRiserStr() {
@@ -349,10 +348,7 @@ class _StairsItemWidgetState extends State<StairsItemWidget> {
     tilingMetersController.addListener(_calculatePriceChanges);
     tilingCostController.addListener(_calculatePriceChanges);
     panelsController.addListener(_calculatePriceChanges);
-    additionalItemsController.addListener(() {
-      print('additionalItemsController changed');
-      _calculatePriceChanges();
-    });
+    additionalItemsController.addListener(_calculatePriceChanges);
   }
 
   final List<bool> _toggleButtonSelection = [true, false];
