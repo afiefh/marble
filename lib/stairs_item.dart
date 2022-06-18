@@ -96,11 +96,16 @@ class StairsItem extends BaseItem {
   }
 
   String processingSides() {
-    return [
+    var sides = [
       if (processingFront) "קדימה",
       if (processingRight) "ימין",
       if (processingLeft) "שמאל"
-    ].join(', ');
+    ];
+    if (sides.isEmpty) {
+      return "ללא עיבוד";
+    }
+    return sides.join(', ')
+
   }
 
   String withRiserStr() {
