@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:marble/util.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+import 'additional_items.dart';
 import 'item.dart';
 import 'number_input.dart';
 
@@ -13,15 +14,19 @@ class KitchenItem extends BaseItem {
   double sinks;
   double wallCovering;
   double wallCoveringOver80;
+  List<AdditionalItem> additionalItems;
 
-  KitchenItem(super.key,
-      {this.pricePerMeter = 0,
-      this.meters = 0,
-      this.metersOver80 = 0,
-      this.edge = 0,
-      this.sinks = 0,
-      this.wallCovering = 0,
-      this.wallCoveringOver80 = 0});
+  KitchenItem(
+    super.key, {
+    this.pricePerMeter = 0,
+    this.meters = 0,
+    this.metersOver80 = 0,
+    this.edge = 0,
+    this.sinks = 0,
+    this.wallCovering = 0,
+    this.wallCoveringOver80 = 0,
+    required this.additionalItems,
+  });
 
   double metersPrice() {
     return pricePerMeter * meters;
@@ -47,13 +52,19 @@ class KitchenItem extends BaseItem {
     return wallCoveringOver80 * pricePerMeter * 2;
   }
 
+  double additionalItemsPrice() {
+    return additionalItems.fold(
+        0, (previousValue, element) => previousValue + element.value);
+  }
+
   double totalPrice() {
     return metersPrice() +
         metersOver80ResPrice() +
         sinkPrice() +
         edgePrice() +
         wallCoverPrice() +
-        wallCoverOver80Price();
+        wallCoverOver80Price() +
+        additionalItemsPrice();
   }
 
   @override
@@ -80,6 +91,9 @@ class KitchenItem extends BaseItem {
           const Text('חיפוי קיר מעל רוחב 80 ס"מ:'),
           Text("$wallCoveringOver80")
         ]),
+        ...additionalItems.map(
+          (e) => TableRow(children: [Text(e.name), Text(e.value.toString())]),
+        ),
         TableRow(children: [
           const Text('מחיר:'),
           Text(
@@ -134,6 +148,12 @@ class KitchenItem extends BaseItem {
           pw.Text("$wallCoveringOver80"),
           pw.Text(reverse('חיפוי קיר מעל רוחב 08 ס"מ:')),
         ]),
+        ...additionalItems.map(
+          (e) => pw.TableRow(children: [
+            pw.Text(e.value.toString()),
+            pw.Text(reverse(e.name))
+          ]),
+        ),
         pw.TableRow(children: [
           pw.Text(
             '${totalPrice()}₪',
@@ -163,14 +183,9 @@ class _KitchenItemWidgetState extends State<KitchenItemWidget> {
   final edgeController = TextEditingController();
   final wallCoveringController = TextEditingController();
   final wallCoveringOver80Controller = TextEditingController();
+  final additionalItemsController = ValueNotifier<List<AdditionalItem>>([]);
 
   late KitchenItem item;
-
-  double parseOrZero(String input) {
-    double? result = double.tryParse(input);
-    if (result == null) return 0;
-    return result;
-  }
 
   void _calculatePriceChanges() {
     // Get inputs
@@ -185,14 +200,14 @@ class _KitchenItemWidgetState extends State<KitchenItemWidget> {
         parseOrZero(wallCoveringOver80Controller.value.text);
 
     setState(() {
-      item = KitchenItem(item.key,
-          pricePerMeter: pricePerMeter,
-          meters: meters,
-          metersOver80: metersOver80,
-          sinks: sinks,
-          edge: edge,
-          wallCovering: wallCovering,
-          wallCoveringOver80: wallCoveringOver80);
+      item.pricePerMeter = pricePerMeter;
+      item.meters = meters;
+      item.metersOver80 = metersOver80;
+      item.sinks = sinks;
+      item.edge = edge;
+      item.wallCovering = wallCovering;
+      item.wallCoveringOver80 = wallCoveringOver80;
+      item.additionalItems = additionalItemsController.value;
     });
   }
 
@@ -205,6 +220,7 @@ class _KitchenItemWidgetState extends State<KitchenItemWidget> {
     edgeController.dispose();
     wallCoveringController.dispose();
     wallCoveringOver80Controller.dispose();
+    additionalItemsController.dispose();
     super.dispose();
   }
 
@@ -224,6 +240,7 @@ class _KitchenItemWidgetState extends State<KitchenItemWidget> {
     edgeController.text = zeroToEmpty(item.edge);
     wallCoveringController.text = zeroToEmpty(item.wallCovering);
     wallCoveringOver80Controller.text = zeroToEmpty(item.wallCoveringOver80);
+    additionalItemsController.value = item.additionalItems;
 
     // Start listening to changes.
     pricePerMeterController.addListener(_calculatePriceChanges);
@@ -233,6 +250,7 @@ class _KitchenItemWidgetState extends State<KitchenItemWidget> {
     edgeController.addListener(_calculatePriceChanges);
     wallCoveringController.addListener(_calculatePriceChanges);
     wallCoveringOver80Controller.addListener(_calculatePriceChanges);
+    additionalItemsController.addListener(_calculatePriceChanges);
   }
 
   @override
@@ -356,6 +374,7 @@ class _KitchenItemWidgetState extends State<KitchenItemWidget> {
                 ),
               ],
             ),
+            AdditionalItemsWidget(additionalItemsController),
             Row(
               children: [
                 IconButton(

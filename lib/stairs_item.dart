@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:marble/util.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+import 'additional_items.dart';
 import 'item.dart';
 import 'number_input.dart';
 
@@ -21,6 +22,7 @@ class StairsItem extends BaseItem {
   double tilingMeters;
   double tilingCost;
   double panels;
+  List<AdditionalItem> additionalItems;
 
   StairsItem(
     super.key, {
@@ -37,6 +39,7 @@ class StairsItem extends BaseItem {
     this.tilingMeters = 0,
     this.tilingCost = 0,
     this.panels = 0,
+    required this.additionalItems,
   });
 
   double riserCost() {
@@ -75,8 +78,16 @@ class StairsItem extends BaseItem {
     return tilingMeters * tilingCost;
   }
 
+  double additionalItemsPrice() {
+    return additionalItems.fold(
+        0, (previousValue, element) => previousValue + element.value);
+  }
+
   double totalPrice() {
-    return (_areaPrice() + _processingPrice()) * units + tilingPrice() + panels;
+    return (_areaPrice() + _processingPrice()) * units +
+        tilingPrice() +
+        panels +
+        additionalItemsPrice();
   }
 
   @override
@@ -122,6 +133,9 @@ class StairsItem extends BaseItem {
         TableRow(
             children: [const Text('מחיר ריצוף למטר:'), Text("$tilingMeters")]),
         TableRow(children: [const Text('פאנל:'), Text("$panels")]),
+        ...additionalItems.map(
+          (e) => TableRow(children: [Text(e.name), Text(e.value.toString())]),
+        ),
         TableRow(children: [
           const Text('מחיר:'),
           Text(
@@ -195,6 +209,12 @@ class StairsItem extends BaseItem {
           pw.Text("$panels"),
           pw.Text(reverse("פאנל:")),
         ]),
+        ...additionalItems.map(
+          (e) => pw.TableRow(children: [
+            pw.Text(e.value.toString()),
+            pw.Text(reverse(e.name))
+          ]),
+        ),
         pw.TableRow(children: [
           pw.Text(
             '${totalPrice()}₪',
@@ -242,14 +262,9 @@ class _StairsItemWidgetState extends State<StairsItemWidget> {
   final tilingMetersController = TextEditingController();
   final tilingCostController = TextEditingController();
   final panelsController = TextEditingController();
+  final additionalItemsController = ValueNotifier<List<AdditionalItem>>([]);
 
   late StairsItem item;
-
-  double parseOrZero(String input) {
-    double? result = double.tryParse(input);
-    if (result == null) return 0;
-    return result;
-  }
 
   void _calculatePriceChanges() {
     // Get inputs
@@ -277,6 +292,7 @@ class _StairsItemWidgetState extends State<StairsItemWidget> {
       item.tilingMeters = tilingMeters;
       item.tilingCost = tilingCost;
       item.panels = panels;
+      item.additionalItems = additionalItemsController.value;
     });
   }
 
@@ -291,6 +307,7 @@ class _StairsItemWidgetState extends State<StairsItemWidget> {
     tilingMetersController.dispose();
     tilingCostController.dispose();
     panelsController.dispose();
+    additionalItemsController.dispose();
     super.dispose();
   }
 
@@ -312,6 +329,7 @@ class _StairsItemWidgetState extends State<StairsItemWidget> {
     tilingMetersController.text = zeroToEmpty(item.tilingMeters);
     tilingCostController.text = zeroToEmpty(item.tilingCost);
     panelsController.text = zeroToEmpty(item.panels);
+    additionalItemsController.value = item.additionalItems;
     _stairShape = item.widthLeft == item.widthRight
         ? StairShape.square
         : StairShape.trapezoid;
@@ -325,6 +343,11 @@ class _StairsItemWidgetState extends State<StairsItemWidget> {
     processingCostController.addListener(_calculatePriceChanges);
     tilingMetersController.addListener(_calculatePriceChanges);
     tilingCostController.addListener(_calculatePriceChanges);
+    panelsController.addListener(_calculatePriceChanges);
+    additionalItemsController.addListener(() {
+      print('additionalItemsController changed');
+      _calculatePriceChanges();
+    });
   }
 
   final List<bool> _toggleButtonSelection = [true, false];
@@ -577,6 +600,7 @@ class _StairsItemWidgetState extends State<StairsItemWidget> {
                 ),
               ],
             ),
+            AdditionalItemsWidget(additionalItemsController),
             Row(
               children: [
                 IconButton(

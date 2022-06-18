@@ -5,20 +5,20 @@ import 'package:flutter/services.dart';
 class NumberInput extends StatelessWidget {
   const NumberInput(
       {Key? key,
-      required this.label,
+      this.label,
       this.controller,
-      this.value,
       this.onChanged,
       this.error,
       this.icon,
       this.allowDecimal = false,
       this.hintText = '',
-      this.suffix = ''})
+      this.suffix = '',
+      this.value})
       : super(key: key);
 
   final TextEditingController? controller;
   final String? value;
-  final String label;
+  final String? label;
   final Function? onChanged;
   final String? error;
   final Widget? icon;
@@ -51,7 +51,7 @@ class NumberInput extends StatelessWidget {
       validator: numberValidator,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
-          label: Text(label),
+          label: label != null ? Text(label!) : null,
           errorText: error,
           icon: icon,
           hintText: hintText,

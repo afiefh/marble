@@ -8,3 +8,9 @@ double roundDouble(double value, int places) {
 String reverse(String s) {
   return s.split('').reversed.join('');
 }
+
+double parseOrZero(String input) {
+  double? result = double.tryParse(input);
+  if (result == null) return 0;
+  return result;
+}

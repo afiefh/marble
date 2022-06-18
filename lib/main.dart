@@ -48,7 +48,8 @@ class _MyHomePageState extends State<MyHomePage> {
     final KitchenItem? result = await Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => KitchenItemWidget(KitchenItem(UniqueKey()))),
+          builder: (context) =>
+              KitchenItemWidget(KitchenItem(UniqueKey(), additionalItems: []))),
     );
 
     if (result != null) {
@@ -63,7 +64,8 @@ class _MyHomePageState extends State<MyHomePage> {
       context,
       // Create the SelectionScreen in the next step.
       MaterialPageRoute(
-          builder: (context) => StairsItemWidget(StairsItem(UniqueKey()))),
+          builder: (context) =>
+              StairsItemWidget(StairsItem(UniqueKey(), additionalItems: []))),
     );
 
     if (result != null) {
@@ -88,7 +90,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 return StairsItemWidget(item);
               } else {
                 assert(false); // Don't know what to do with this item!
-                return StairsItemWidget(StairsItem(UniqueKey()));
+                return StairsItemWidget(
+                    StairsItem(UniqueKey(), additionalItems: []));
               }
             }),
           );
