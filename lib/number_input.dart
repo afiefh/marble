@@ -11,6 +11,7 @@ class NumberInput extends StatelessWidget {
       this.error,
       this.icon,
       this.allowDecimal = false,
+      this.allowNegative = true,
       this.hintText = '',
       this.suffix = '',
       this.value})
@@ -23,11 +24,15 @@ class NumberInput extends StatelessWidget {
   final String? error;
   final Widget? icon;
   final bool allowDecimal;
+  final bool allowNegative;
   final String? hintText;
   final String? suffix;
 
   static String? numberValidator(String? value) {
     if (value == null) {
+      return null;
+    }
+    if (value == "") {
       return null;
     }
     final n = num.tryParse(value);
@@ -44,7 +49,8 @@ class NumberInput extends StatelessWidget {
       initialValue: value,
       onChanged: onChanged as void Function(String)?,
       readOnly: false,
-      keyboardType: TextInputType.numberWithOptions(decimal: allowDecimal),
+      keyboardType:
+          TextInputType.numberWithOptions(decimal: allowDecimal, signed: true),
       inputFormatters: <TextInputFormatter>[
         FilteringTextInputFormatter.allow(RegExp(_getRegexString())),
       ],
@@ -60,5 +66,6 @@ class NumberInput extends StatelessWidget {
   }
 
   String _getRegexString() =>
-      allowDecimal ? r'[0-9]+[,.]{0,1}[0-9]*' : r'[0-9]';
+      (allowNegative ? r'-?' : '') +
+      (allowDecimal ? r'-?[0-9]*[,.]?[0-9]*' : r'-?[0-9]*');
 }
