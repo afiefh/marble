@@ -12,6 +12,7 @@ class KitchenItem extends BaseItem {
   double metersOver80;
   double edge;
   double sinks;
+  double wallCoveringPrice;
   double wallCovering;
   double wallCoveringOver80;
   List<AdditionalItem> additionalItems;
@@ -23,6 +24,7 @@ class KitchenItem extends BaseItem {
     this.metersOver80 = 0,
     this.edge = 0,
     this.sinks = 0,
+    this.wallCoveringPrice = 0,
     this.wallCovering = 0,
     this.wallCoveringOver80 = 0,
     required this.additionalItems,
@@ -45,11 +47,11 @@ class KitchenItem extends BaseItem {
   }
 
   double wallCoverPrice() {
-    return wallCovering * pricePerMeter;
+    return wallCovering * wallCoveringPrice;
   }
 
   double wallCoverOver80Price() {
-    return wallCoveringOver80 * pricePerMeter * 2;
+    return wallCoveringOver80 * wallCoveringPrice * 2;
   }
 
   double additionalItemsPrice() {
@@ -86,6 +88,10 @@ class KitchenItem extends BaseItem {
         ]),
         TableRow(children: [const Text("כייורים"), Text("$sinks")]),
         TableRow(children: [const Text("קנט"), Text("$edge")]),
+        TableRow(children: [
+          const Text("מחיר חיפוי קיר למטר:"),
+          Text("$wallCoveringPrice")
+        ]),
         TableRow(children: [const Text("חיפוי קיר:"), Text("$wallCovering")]),
         TableRow(children: [
           const Text('חיפוי קיר מעל רוחב 80 ס"מ:'),
@@ -141,6 +147,10 @@ class KitchenItem extends BaseItem {
           pw.Text(reverse("קנט")),
         ]),
         pw.TableRow(children: [
+          pw.Text("$wallCoveringPrice"),
+          pw.Text(reverse("מחיר חיפוי קיר למטר:")),
+        ]),
+        pw.TableRow(children: [
           pw.Text("$wallCovering"),
           pw.Text(reverse("חיפוי קיר:")),
         ]),
@@ -181,6 +191,7 @@ class _KitchenItemWidgetState extends State<KitchenItemWidget> {
   final metersOver80Controller = TextEditingController();
   final sinksController = TextEditingController();
   final edgeController = TextEditingController();
+  final wallCoveringPriceController = TextEditingController();
   final wallCoveringController = TextEditingController();
   final wallCoveringOver80Controller = TextEditingController();
   final additionalItemsController = ValueNotifier<List<AdditionalItem>>([]);
@@ -195,6 +206,8 @@ class _KitchenItemWidgetState extends State<KitchenItemWidget> {
     final double metersOver80 = parseOrZero(metersOver80Controller.value.text);
     final double sinks = parseOrZero(sinksController.value.text);
     final double edge = parseOrZero(edgeController.value.text);
+    final double wallCoveringPrice =
+        parseOrZero(wallCoveringPriceController.value.text);
     final double wallCovering = parseOrZero(wallCoveringController.value.text);
     final double wallCoveringOver80 =
         parseOrZero(wallCoveringOver80Controller.value.text);
@@ -205,6 +218,7 @@ class _KitchenItemWidgetState extends State<KitchenItemWidget> {
       item.metersOver80 = metersOver80;
       item.sinks = sinks;
       item.edge = edge;
+      item.wallCoveringPrice = wallCoveringPrice;
       item.wallCovering = wallCovering;
       item.wallCoveringOver80 = wallCoveringOver80;
       item.additionalItems = additionalItemsController.value;
@@ -218,6 +232,7 @@ class _KitchenItemWidgetState extends State<KitchenItemWidget> {
     metersOver80Controller.dispose();
     sinksController.dispose();
     edgeController.dispose();
+    wallCoveringPriceController.dispose();
     wallCoveringController.dispose();
     wallCoveringOver80Controller.dispose();
     additionalItemsController.dispose();
@@ -238,6 +253,7 @@ class _KitchenItemWidgetState extends State<KitchenItemWidget> {
     metersOver80Controller.text = zeroToEmpty(item.metersOver80);
     sinksController.text = zeroToEmpty(item.sinks);
     edgeController.text = zeroToEmpty(item.edge);
+    wallCoveringPriceController.text = zeroToEmpty(item.wallCoveringPrice);
     wallCoveringController.text = zeroToEmpty(item.wallCovering);
     wallCoveringOver80Controller.text = zeroToEmpty(item.wallCoveringOver80);
     additionalItemsController.value = item.additionalItems;
@@ -248,6 +264,7 @@ class _KitchenItemWidgetState extends State<KitchenItemWidget> {
     metersOver80Controller.addListener(_calculatePriceChanges);
     sinksController.addListener(_calculatePriceChanges);
     edgeController.addListener(_calculatePriceChanges);
+    wallCoveringPriceController.addListener(_calculatePriceChanges);
     wallCoveringController.addListener(_calculatePriceChanges);
     wallCoveringOver80Controller.addListener(_calculatePriceChanges);
     additionalItemsController.addListener(_calculatePriceChanges);
@@ -334,6 +351,17 @@ class _KitchenItemWidgetState extends State<KitchenItemWidget> {
                       margin: const EdgeInsets.all(10.0),
                       child: Text('${item.edgePrice()} ₪'),
                     ),
+                  ],
+                ),
+                TableRow(
+                  children: <Widget>[
+                    NumberInput(
+                        label: "מחיר חיפוי קיר:",
+                        hintText: '₪ למטר',
+                        suffix: '₪ למטר',
+                        allowDecimal: true,
+                        controller: wallCoveringPriceController),
+                    Container(),
                   ],
                 ),
                 TableRow(
